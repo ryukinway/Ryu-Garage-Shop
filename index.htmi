@@ -446,7 +446,6 @@
   </div>
 
   <script>
-    // ข้อมูลจำลองสำหรับเกมและแพ็กเกจ
     const games = [
       { id: 'rov', name: 'RoV: Arena of Valor', icon: '⚔️', unit: 'คูปอง' },
       { id: 'valorant', name: 'Valorant', icon: '🎯', unit: 'VP' },
@@ -487,12 +486,10 @@
       { id: 'card', name: 'บัตรเครดิต/เดบิต', fee: 'ค่าบริการ 2.5%', icon: '💳' }
     ];
 
-    // สถานะที่เลือก
     let selectedGame = games[0];
     let selectedPackage = null;
     let selectedPayment = paymentMethods[0];
 
-    // Render Games
     const gameGrid = document.getElementById('gameGrid');
     function renderGames() {
       gameGrid.innerHTML = games.map(g => `
@@ -511,7 +508,6 @@
       updateSummary();
     }
 
-    // Render Packages
     const packageGrid = document.getElementById('packageGrid');
     function renderPackages() {
       const list = packageTemplates[selectedGame.id] || [];
@@ -531,7 +527,6 @@
       updateSummary();
     }
 
-    // Render Payments
     const paymentGrid = document.getElementById('paymentGrid');
     function renderPayments() {
       paymentGrid.innerHTML = paymentMethods.map(pm => `
@@ -550,7 +545,6 @@
       renderPayments();
     }
 
-    // Summary Update
     function updateSummary() {
       const summaryText = document.getElementById('summaryText');
       const totalDisplay = document.getElementById('totalDisplay');
@@ -564,7 +558,6 @@
       }
     }
 
-    // Player ID Check Mock
     document.getElementById('verifyBtn').addEventListener('click', () => {
       const uid = document.getElementById('playerIdInput').value.trim();
       const badge = document.getElementById('verifiedBadge');
@@ -576,7 +569,6 @@
       badge.style.display = 'block';
     });
 
-    // Checkout Flow
     const paymentModal = document.getElementById('paymentModal');
     document.getElementById('confirmTopUpBtn').addEventListener('click', () => {
       const uid = document.getElementById('playerIdInput').value.trim();
@@ -604,7 +596,6 @@
       alert🎉 การเติมเงินสำเร็จ!\nระบบได้ส่ง ${selectedPackage.amount} เข้าสู่ไอดี ${document.getElementById('playerIdInput').value} เรียบร้อยแล้ว`);
     });
 
-    // Initial Load
     renderGames();
     renderPackages();
     renderPayments();
