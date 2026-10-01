@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TopUpZone - บริการเติมเกมออนไลน์ 24 ชม.</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-light: #1f2937;
+      --border: #374151;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #ec4899;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --success: #10b981;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .nav-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .step-number {
+      background: var(--primary);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    /* Step 1: Game Grid */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .game-item {
+      background: var(--surface-light);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 1rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .game-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .game-item.selected {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .game-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Step 2: Account Form */
+    .form-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    @media (max-width: 640px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      padding: 0.65rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary {
+      background: var(--surface-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .verified-badge {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--success);
+      display: none;
+    }
+
+    /* Step 3: Package Grid */
+    .package-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .package-card {
+      background: var(--surface-light);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .package-card:hover {
+      border-color: var(--primary);
+    }
+
+    .package-card.selected {
+      border-color: var(--accent);
+      background: rgba(236, 72, 153, 0.12);
+    }
+
+    .package-bonus {
+      position: absolute;
+      top: -8px;
+      right: 8px;
+      background: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+    }
+
+    .package-amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .package-price {
+      font-size: 1rem;
+      color: #38bdf8;
+      margin-top: 0.3rem;
+    }
+
+    /* Step 4: Payments */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .payment-option {
+      background: var(--surface-light);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .payment-option.selected {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    /* Checkout Bar */
+    .checkout-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .price-summary {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .price-total {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 50;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 440px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .qr-mock {
+      background: white;
+      color: black;
+      width: 180px;
+      height: 180px;
+      margin: 1.2rem auto;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 6px solid white;
+    }
+
+    .countdown {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">⚡ TopUpZone</a>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">ระบบเติมเงินอัตโนมัติ 24 ชม.</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- ขั้นตอนที่ 1: เลือกเกม -->
+    <section class="step-card">
+      <div class="step-title">
+        <span class="step-number">1</span>
+        <span>เลือกเกมที่ต้องการเติม</span>
+      </div>
+      <div class="game-grid" id="gameGrid"></div>
+    </section>
+
+    <!-- ขั้นตอนที่ 2: กรอกข้อมูลบัญชี -->
+    <section class="step-card">
+      <div class="step-title">
+        <span class="step-number">2</span>
+        <span>กรอกข้อมูลตัวละคร</span>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Player ID / OpenID / UID</label>
+          <input type="text" id="playerIdInput" placeholder="ระบุ UID ตัวเลขของคุณ">
+        </div>
+        <div class="input-group">
+          <label>Server</label>
+          <select id="serverSelect">
+            <option>Asia (ไทย)</option>
+            <option>Global</option>
+            <option>Europe</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary" id="verifyBtn" type="button">ตรวจสอบชื่อ</button>
+      </div>
+      <div class="verified-badge" id="verifiedBadge">✓ พบชื่อผู้เล่น: <strong id="playerNameText">PlayerOne_TH</strong></div>
+    </section>
+
+    <!-- ขั้นตอนที่ 3: เลือกแพ็กเกจ -->
+    <section class="step-card">
+      <div class="step-title">
+        <span class="step-number">3</span>
+        <span>เลือกแพ็กเกจเติมเงิน</span>
+      </div>
+      <div class="package-grid" id="packageGrid"></div>
+    </section>
+
+    <!-- ขั้นตอนที่ 4: ช่องทางชำระเงิน -->
+    <section class="step-card">
+      <div class="step-title">
+        <span class="step-number">4</span>
+        <span>เลือกช่องทางชำระเงิน</span>
+      </div>
+      <div class="payment-grid" id="paymentGrid"></div>
+    </section>
+
+    <!-- สรุปและปุ่มสั่งซื้อ -->
+    <div class="checkout-bar">
+      <div>
+        <div class="price-summary" id="summaryText">ยังไม่ได้เลือกแพ็กเกจ</div>
+        <div class="price-total" id="totalDisplay">฿0</div>
+      </div>
+      <button class="btn btn-primary" id="confirmTopUpBtn" style="padding: 0.85rem 2rem;">
+        ยืนยันการเติมเงิน
+      </button>
+    </div>
+  </main>
+
+  <!-- หน้าต่างจำลองการชำระเงิน -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <h3>สแกนเพื่อชำระเงิน</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;">PromptPay QR Code (ระบบจำลอง)</p>
+      
+      <div class="qr-mock">
+        <div style="font-size: 2.5rem; margin-bottom: 0.3rem;">📱</div>
+        <div style="font-size: 0.8rem;">PROMPTPAY QR</div>
+      </div>
+
+      <div class="countdown">กรุณาชำระเงินภายใน <span id="timerText">05:00</span> นาที</div>
+      <div style="background: var(--surface-light); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; text-align: left; margin-bottom: 1.2rem;">
+        <div>เกม: <strong id="modalGame"></strong></div>
+        <div>UID: <strong id="modalUid"></strong></div>
+        <div>ยอดเงิน: <strong style="color:#38bdf8;" id="modalPrice"></strong></div>
+      </div>
+
+      <button class="btn btn-primary" id="simulateSuccessBtn" style="width: 100%; margin-bottom: 0.5rem;">
+        จำลองว่าโอนเงินสำเร็จแล้ว
+      </button>
+      <button class="btn btn-secondary" id="modalCloseBtn" style="width: 100%;">
+        ยกเลิก
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ข้อมูลจำลองสำหรับเกมและแพ็กเกจ
+    const games = [
+      { id: 'rov', name: 'RoV: Arena of Valor', icon: '⚔️', unit: 'คูปอง' },
+      { id: 'valorant', name: 'Valorant', icon: '🎯', unit: 'VP' },
+      { id: 'genshin', name: 'Genshin Impact', icon: '✨', unit: 'Genesis Crystals' },
+      { id: 'freefire', name: 'Free Fire', icon: '🔥', unit: 'เพชร' }
+    ];
+
+    const packageTemplates = {
+      rov: [
+        { id: 1, amount: '50 คูปอง', price: 35, bonus: '' },
+        { id: 2, amount: '150 คูปอง', price: 100, bonus: '+15 โบนัส' },
+        { id: 3, amount: '450 คูปอง', price: 300, bonus: '+50 โบนัส' },
+        { id: 4, amount: '750 คูปอง', price: 500, bonus: '+100 โบนัส' },
+        { id: 5, amount: '1,500 คูปอง', price: 1000, bonus: '+250 โบนัส' }
+      ],
+      valorant: [
+        { id: 1, amount: '475 VP', price: 150, bonus: '' },
+        { id: 2, amount: '1,000 VP', price: 300, bonus: '' },
+        { id: 3, amount: '2,050 VP', price: 600, bonus: '+50 VP' },
+        { id: 4, amount: '3,650 VP', price: 1000, bonus: '+150 VP' }
+      ],
+      genshin: [
+        { id: 1, amount: '60 เม็ด', price: 35, bonus: 'x2 ครั้งแรก' },
+        { id: 2, amount: '300 เม็ด', price: 175, bonus: '+30 เม็ด' },
+        { id: 3, amount: '980 เม็ด', price: 529, bonus: '+110 เม็ด' },
+        { id: 4, amount: 'พรแห่งดวงจันทร์ (30 วัน)', price: 175, bonus: 'สุดคุ้ม' }
+      ],
+      freefire: [
+        { id: 1, amount: '100 เพชร', price: 35, bonus: '' },
+        { id: 2, amount: '310 เพชร', price: 100, bonus: '+31 เพชร' },
+        { id: 3, amount: '520 เพชร', price: 170, bonus: '+52 เพชร' }
+      ]
+    };
+
+    const paymentMethods = [
+      { id: 'promptpay', name: 'PromptPay QR', fee: 'ไม่มีค่าธรรมเนียม', icon: '⚡' },
+      { id: 'truemoney', name: 'TrueMoney Wallet', fee: 'ไม่มีค่าธรรมเนียม', icon: '👛' },
+      { id: 'card', name: 'บัตรเครดิต/เดบิต', fee: 'ค่าบริการ 2.5%', icon: '💳' }
+    ];
+
+    // สถานะที่เลือก
+    let selectedGame = games[0];
+    let selectedPackage = null;
+    let selectedPayment = paymentMethods[0];
+
+    // Render Games
+    const gameGrid = document.getElementById('gameGrid');
+    function renderGames() {
+      gameGrid.innerHTML = games.map(g => `
+        <div class="game-item ${g.id === selectedGame.id ? 'selected' : ''}" onclick="selectGame('${g.id}')">
+          <div class="game-icon">${g.icon}</div>
+          <div class="game-name">${g.name}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectGame(gameId) {
+      selectedGame = games.find(g => g.id === gameId);
+      selectedPackage = null;
+      renderGames();
+      renderPackages();
+      updateSummary();
+    }
+
+    // Render Packages
+    const packageGrid = document.getElementById('packageGrid');
+    function renderPackages() {
+      const list = packageTemplates[selectedGame.id] || [];
+      packageGrid.innerHTML = list.map(p => `
+        <div class="package-card ${selectedPackage && selectedPackage.id === p.id ? 'selected' : ''}" onclick="selectPackage(${p.id})">
+          ${p.bonus ? <span class="package-bonus">${p.bonus}</span> : ''}
+          <div class="package-amount">${p.amount}</div>
+          <div class="package-price">฿${p.price.toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectPackage(pkgId) {
+      const list = packageTemplates[selectedGame.id] || [];
+      selectedPackage = list.find(p => p.id === pkgId);
+      renderPackages();
+      updateSummary();
+    }
+
+    // Render Payments
+    const paymentGrid = document.getElementById('paymentGrid');
+    function renderPayments() {
+      paymentGrid.innerHTML = paymentMethods.map(pm => `
+        <div class="payment-option ${pm.id === selectedPayment.id ? 'selected' : ''}" onclick="selectPayment('${pm.id}')">
+          <span style="font-size: 1.5rem;">${pm.icon}</span>
+          <div>
+            <div style="font-weight: 600; font-size: 0.95rem;">${pm.name}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${pm.fee}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectPayment(pId) {
+      selectedPayment = paymentMethods.find(p => p.id === pId);
+      renderPayments();
+    }
+
+    // Summary Update
+    function updateSummary() {
+      const summaryText = document.getElementById('summaryText');
+      const totalDisplay = document.getElementById('totalDisplay');
+
+      if (selectedPackage) {
+        summaryText.textContent = ${selectedGame.name} • ${selectedPackage.amount};
+        totalDisplay.textContent = ฿${selectedPackage.price.toLocaleString()};
+      } else {
+        summaryText.textContent = เลือกแพ็กเกจเพื่อดูยอดรวม;
+        totalDisplay.textContent = ฿0;
+      }
+    }
+
+    // Player ID Check Mock
+    document.getElementById('verifyBtn').addEventListener('click', () => {
+      const uid = document.getElementById('playerIdInput').value.trim();
+      const badge = document.getElementById('verifiedBadge');
+      if (!uid) {
+        alert('กรุณากรอก UID หรือ Player ID ก่อนตรวจสอบ');
+        return;
+      }
+      document.getElementById('playerNameText').textContent = User_${uid.slice(-4) || '9999'};
+      badge.style.display = 'block';
+    });
+
+    // Checkout Flow
+    const paymentModal = document.getElementById('paymentModal');
+    document.getElementById('confirmTopUpBtn').addEventListener('click', () => {
+      const uid = document.getElementById('playerIdInput').value.trim();
+      if (!uid) {
+        alert('กรุณาระบุ Player ID / UID ของผู้เล่น');
+        return;
+      }
+      if (!selectedPackage) {
+        alert('กรุณาเลือกแพ็กเกจที่ต้องการเติม');
+        return;
+      }
+
+      document.getElementById('modalGame').textContent = selectedGame.name;
+      document.getElementById('modalUid').textContent = uid;
+      document.getElementById('modalPrice').textContent = ฿${selectedPackage.price.toLocaleString()} (${selectedPayment.name});
+      paymentModal.classList.add('active');
+    });
+
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+      paymentModal.classList.remove('active');
+    });
+
+    document.getElementById('simulateSuccessBtn').addEventListener('click', () => {
+      paymentModal.classList.remove('active');
+      alert🎉 การเติมเงินสำเร็จ!\nระบบได้ส่ง ${selectedPackage.amount} เข้าสู่ไอดี ${document.getElementById('playerIdInput').value} เรียบร้อยแล้ว`);
+    });
+
+    // Initial Load
+    renderGames();
+    renderPackages();
+    renderPayments();
+  </script>
+</body>
+</html>
